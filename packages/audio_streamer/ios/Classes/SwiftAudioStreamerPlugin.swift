@@ -113,6 +113,10 @@ public class SwiftAudioStreamerPlugin: NSObject, FlutterPlugin, FlutterStreamHan
     do {
       try AVAudioSession.sharedInstance().setCategory(
         AVAudioSession.Category.playAndRecord, options: .mixWithOthers)
+
+      // SampleRate가 기본이 48000이라서 바꿔줌
+      try AVAudioSession.sharedInstance().setPreferredSampleRate(44100.0)
+
       try AVAudioSession.sharedInstance().setActive(true)
 
       if let sampleRateNotNull = sampleRate {
@@ -123,7 +127,8 @@ public class SwiftAudioStreamerPlugin: NSObject, FlutterPlugin, FlutterStreamHan
       let input = engine.inputNode
       let bus = 0
 
-      input.installTap(onBus: bus, bufferSize: 22050, format: input.inputFormat(forBus: bus)) {
+        // Buffer사이즈가 기본이 22050이라서 바꿔줌
+      input.installTap(onBus: bus, bufferSize: 6400, format: input.inputFormat(forBus: bus)) {
         buffer, _ -> Void in
         let samples = buffer.floatChannelData?[0]
         // audio callback, samples in samples[0]...samples[buffer.frameLength-1]
